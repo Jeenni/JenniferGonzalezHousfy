@@ -26,9 +26,9 @@
             jQuery(document).ready(function() {
 
 
-                $('.ubicacionStart').click(function(e){
+                /*$('.ubicacionStart').click(function(e){
                     alert($('#coordenadas').val());
-                });
+                });*/
 
         });
 
@@ -38,10 +38,21 @@
         <div class="container">
             <div class="row justify-content-md-center">
                 <div class="form-group mx-sm-3 mb-2">
-                    <label class="sr-only">Coordenadas</label>
-                    <input type="text" class="form-control" id="coordenadas" placeholder="Coordenadas">
+                    <form action="" method="">
+                    <p>Pon la coordenada X donde quieras que empieze.</p>
+                    <label class="sr-only">Coordenada X</label>
+                    <input type="text" class="form-control" id="coordenadax" name="coordenadasx" placeholder="Ej 1"></br>
+                    <p>Pon la coordenada Y donde quieras que empieze.</p>
+                    <label class="sr-only">Coordenada Y</label>
+                    <input type="text" class="form-control" id="coordenaday" name="coordenadasy" placeholder="Ej 1"></br>
+                    <p>Pon la sequencia de movimientos que quiera que haga. F(front), R(rigth), L(left), B(botton).</p>
+                    <label class="sr-only">Sequencia</label>
+                    <input type="text" class="form-control" id="coordenadasMovimieto" name="coordenadasMovimieto" placeholder="Ej LBBRF"></br>
+                    <button type="submit" name="submit" class="btn btn-primary">Enviar Ubicación</button>
+                </form>
                 </div>
-                <div type="submit" class="btn btn-primary mb-2 ubicacionStart">Enviar Ubicación</div>
+
+                
 
             </div>
 
@@ -50,169 +61,135 @@
            
 
             <?php 
-
-
-
-
-            //si el numero es - error, fuera de rango
-            //si el numero es + de 200 error, fuera de rango
-
-
-            $coordenadasx=0;
-
-            $coordenadasy=0;
-
-            $planeta = array();
-            
-
-            $contador=0;
-            $contadorInterno=0;
-
-            while ($contador <= 20) {
-                $seccion = array();
-                while ($contadorInterno <= 20) {
-                    $random = rand(0, 10);
-                    if($random>8){
-                        $variable ='1';
-                    }else{
-                        $variable ='0';
-                    }
-                    array_push($seccion, $variable);
-                    $contadorInterno++;
+            $error=0;
+            if(isset($_GET['submit'])){
+                if(isset($_GET['coordenadasx'])){
+                    $coordenadasx=$_GET['coordenadasx'];
+                }else{
+                    $error++;
                 }
-                array_push($planeta, $seccion);
-                unset($seccion);
+
+                if(isset($_GET['coordenadasy'])){
+                    $coordenadasy=$_GET['coordenadasy'];
+                }else{
+                    $error++;
+                }
+
+                if(isset($_GET['coordenadasMovimieto'])){
+                    $coordenadasMovimieto=$_GET['coordenadasMovimieto'];
+                }else{
+                    $error++;
+                }
+
+                if($coordenadasx<0 || $coordenadasx>201 || $coordenadasy<0 || $coordenadasy>201){
+                    ?>
+                    <div class="alert alert-primary" role="alert">
+                        Nose puede poner coordenadas mas grandes que el planeta de 200x200.
+                    </div>
+                    <?php
+            }else{
+
+                $planeta = array();
+                
+
+                $contador=0;
                 $contadorInterno=0;
-                $contador++; 
-            }
-            $coordenadasFinalEs= null;
-            $coodenadasAnterior = $coordenadasx.' '.$coordenadasy;
-            if($planeta[$coordenadasx][$coordenadasy]==0){
-                $coordenadasMovimieto = 'B,R,R,L';
 
-                $coordenadasMovimietoS = explode(',', $coordenadasMovimieto);
-                
-                foreach ($coordenadasMovimietoS as $key => $value) {
-                    switch ($value) {
-                        case 'F':
-                            $coordenadasx--;
-                            break;
-                        case 'R':
-                            $coordenadasy++;
-                            break;
-                        case 'L':
-                            $coordenadasy--;
-                            break;
-                        case 'B':
-                            $coordenadasx++;
-                            break;
-                        
-                        default:
-                            # code...
-                            break;
-                    }
-                    if($planeta[$coordenadasx][$coordenadasy]==0){
-                        $coodenadasAnterior = $coordenadasx.' '.$coordenadasy;
-                    }else{
-                        echo "hay un obstaculo";
-                        $coordenadasFinalEs = '0';
-                        break;
-                    }
-                }
-
-
-                
-            }else{
-                echo "Solo empezar la ruta hay un obtaculo";
-                $coordenadasFinalEs='0';
-            }
-            if($coordenadasFinalEs==null){
-                echo ' Pudo hacer toda la ruta.';
-
-            }else{
-                echo "La poscion donde se ha tenido que quedar el robot ha sido la ".$coodenadasAnterior;
-            }
-
-            
-            
-echo'</br>';
-
-
-
-$nfil = count($planeta);
-$ncol = count($planeta[0]);
-$i = 0;
-            while ( $i < $nfil ) {
-    $j = 0;
-    // $ncol = count($matriz[$i]);
-    while ( $j < $ncol ) {
-        echo $planeta[$i][$j]."   ";
-        $j++;
-    }
-    echo "<br />";
-    $i++;
-}
-
-
-
-
-            //$array2d = array_fill(0, 20, array_fill(0, 20, $random = rand(0, 10)));
-
-            //var_dump($array2d);
-            
-
-//
-//  Es obvio que para recorrer una matriz como la anterior se debe usar dos bucles anidados
-//
-//  Si queremos usar los bucles condicionales while, for, do while deberemos
-//  averiguar primero el número de filas y de columnas que tiene la matriz
-//  Para ello debemos usar la función count()
-//
-// Para averiguar el número de filas se pasa a la función count()
-// la variable que representa la matriz
-//  Para averiguar el número de columnas se pasa a la función la fila a la que se quiera
-//  contar los elementos
-
-
-
-//  El recorrido de la matriz para escribirla es el que se muestra a continuación
-//*
-/*echo "<br />Los elementos de la matriz son <br /><br />";
-$i = 0; // se moverá por las filas
-while ( $i < $nfil ) {
-    $j = 0;
-    // $ncol = count($matriz[$i]);
-    while ( $j < $ncol ) {
-        echo $array2d[$i][$j]."   ";
-        $j++;
-    }
-    echo "<br />";
-    $i++;
-}
-                echo "<br />Mostrando el nro de filas y columnas de la matriz<br />";
-                $nfil = 20;
-                $ncol = 20;
-                echo "la matriz \$matriz tiene $nfil filas y $ncol columnas<br />";
-
-                //  El recorrido de la matriz para escribirla es el que se muestra a continuación
-//
-                echo "<br />Los elementos de la matriz son <br /><br />";
-                $i = 0; // se moverá por las filas
-                while ( $i < $nfil ) {
-                    $j = 0;
-                    // $ncol = count($matriz[$i]);
-                    while ( $j < $ncol ) {
+                while ($contador <= 200) {
+                    $seccion = array();
+                    while ($contadorInterno <= 200) {
                         $random = rand(0, 10);
                         if($random>8){
-                            echo "1";
+                            $variable ='1';
                         }else{
-                            echo "0";
+                            $variable ='0';
                         }
-                        $j++;
+                        array_push($seccion, $variable);
+                        $contadorInterno++;
                     }
-                    echo "<br />";
-                    $i++;
-                }*/
+                    array_push($planeta, $seccion);
+                    unset($seccion);
+                    $contadorInterno=0;
+                    $contador++; 
+                }
+                $coordenadasFinalEs= null;
+                $coodenadasAnterior = $coordenadasx.' '.$coordenadasy;
+                if($planeta[$coordenadasx][$coordenadasy]==0){
+                    
+                    $coordenadasMovimieto= strtoupper($coordenadasMovimieto);
+                    $coordenadasMovimietoS = str_split($coordenadasMovimieto);
+                    
+                    foreach ($coordenadasMovimietoS as $key => $value) {
+                        switch ($value) {
+                            case 'F':
+                                $coordenadasx--;
+                                break;
+                            case 'R':
+                                $coordenadasy++;
+                                break;
+                            case 'L':
+                                $coordenadasy--;
+                                break;
+                            case 'B':
+                                $coordenadasx++;
+                                break;
+                            
+                            default:
+                                # code...
+                                break;
+                        }
+                        if(isset($planeta[$coordenadasx][$coordenadasy])){
+                            if($planeta[$coordenadasx][$coordenadasy]==0){
+                                $coodenadasAnterior = $coordenadasx.' '.$coordenadasy;
+                            }else{
+                                ?>
+                                <div class="alert alert-danger" role="alert">
+                                    Hay un obstaculo
+                                </div>
+                                <?php
+                                $coordenadasFinalEs = '0';
+                                break;
+                            }
+                        }else{
+                            ?>
+                            <div class="alert alert-danger" role="alert">
+                                La ruta que has pedido es imposible hacerla, hay obstaculo.
+                            </div>
+                            <?php
+                            $coordenadasFinalEs='0';
+                        }
+                    }
+
+
+                    
+                }else{
+                    ?>
+                    <div class="alert alert-danger" role="alert">
+                        Solo empezar la ruta hay un obtaculo.
+                    </div>
+                    <?php
+                    $coordenadasFinalEs='0';
+                }
+                if($coordenadasFinalEs==null){ ?>
+                    <div class="alert alert-success" role="alert">
+                        Pudo hacer toda la ruta.
+                    </div>
+                    <?php
+
+                }else{ ?>
+                    <div class="alert alert-primary" role="alert">
+                        La poscion donde se ha tenido que quedar el robot ha sido la <?php echo $coodenadasAnterior; ?>
+                    </div>
+                    <?php
+                }
+            }
+
+        }
+            
+
+
+            
+
 
             ?>
             
